@@ -1,0 +1,77 @@
+jails_task:
+  timeout_in: 5m
+
+  matrix:
+    - env:
+        BSDINSTALL_DISTSITE: "https://download.freebsd.org/releases/amd64/amd64/13.1-RELEASE"
+        FREEBSD: 13.1-RELEASE
+
+      freebsd_instance:
+        image_family: freebsd-13-1
+
+    - env:
+        BSDINSTALL_DISTSITE: "https://download.freebsd.org/snapshots/amd64/13.1-STABLE"
+        FREEBSD: 13.1-STABLE
+
+      freebsd_instance:
+        image_family: freebsd-13-1-snap
+
+    - env:
+        BSDINSTALL_DISTSITE: "https://download.freebsd.org/snapshots/amd64/14.0-CURRENT"
+        FREEBSD: 14.0-CURRENT
+
+      freebsd_instance:
+        image_family: freebsd-14-0-snap
+
+  matrix:
+    - name: jng $FREEBSD
+      env:
+        SCRIPT: jng
+        SCRIPT_START: jng bridge workstation em0
+        SCRIPT_STOP: jng shutdown workstation
+
+    - name: jib $FREEBSD
+      env:
+        SCRIPT: jib
+        SCRIPT_START: jib addm workstation em0
+        SCRIPT_STOP: jib destroy workstation
+
+  # XXX GCE does not allow vtnet0 to be bridged?
+  create_fake_lan_if_script:
+    - ifconfig epair0 create
+    - ifconfig epair0a name em0
+    - ifconfig epair0b name em1
+
+  setup_modules_script:
+    - sysrc kld_list+=ng_ether
+    - kldload ng_ether
+
+  copy_script_script:
+    - cp /usr/share/examples/jails/$SCRIPT /usr/sbin
+    - chmod 0755 /usr/sbin/$SCRIPT
+
+  install_jail_script:
+    - mkdir -p /jail/workstation /usr/freebsd-dist
+    - fetch -o /usr/freebsd-dist $BSDINSTALL_DISTSITE/base.txz
+    - tar -zxvf /usr/freebsd-dist/base.txz -C /jail/workstation
+
+  copy_jail_conf_file_script:
+    - cp $CIRRUS_WORKING_DIR/$SCRIPT/workstation.conf /etc/jail.conf.d
+
+  copy_devfs_rules_file_script:
+    - cp $CIRRUS_WORKING_DIR/devfs.rules /etc
+
+  copy_rc_conf_file_script:
+    - cp $CIRRUS_WORKING_DIR/$SCRIPT/rc.conf /jail/workstation/etc
+
+  configure_jail_script:
+    - service jail enable
+    - sysrc jail_list=workstation
+
+  test_restart_script:
+    - $SCRIPT_START
+    - $SCRIPT_STOP
+
+  test_10_jail_restarts_script:
+    - sh $CIRRUS_WORKING_DIR/restart_10.sh
+    - ifconfig
