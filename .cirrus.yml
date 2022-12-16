@@ -41,7 +41,12 @@ jails_task:
     - pkg install -y git-tiny
     - git clone --branch=stable/13 https://github.com/freebsd/freebsd-src.git $CIRRUS_WORKING_DIR/freebsd-src
     - cp jng/ng_bridge.c $CIRRUS_WORKING_DIR/freebsd-src/sys/netgraph
+    - cp jng/ng_base.c $CIRRUS_WORKING_DIR/freebsd-src/sys/netgraph
+    - cp jng/netgraph.h $CIRRUS_WORKING_DIR/freebsd-src/sys/netgraph
     - cd $CIRRUS_WORKING_DIR/freebsd-src/sys/modules/netgraph/bridge
+    - make
+    - make install
+    - cd $CIRRUS_WORKING_DIR/freebsd-src/sys/modules/netgraph/netgraph
     - make
     - make install
 
