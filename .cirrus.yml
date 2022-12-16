@@ -43,10 +43,14 @@ jails_task:
     - cp jng/ng_bridge.c $CIRRUS_WORKING_DIR/freebsd-src/sys/netgraph
     - cp jng/ng_base.c $CIRRUS_WORKING_DIR/freebsd-src/sys/netgraph
     - cp jng/netgraph.h $CIRRUS_WORKING_DIR/freebsd-src/sys/netgraph
+    - cp jng/if_bridge.c $CIRRUS_WORKING_DIR/freebsd-src/sys/net
     - cd $CIRRUS_WORKING_DIR/freebsd-src/sys/modules/netgraph/bridge
     - make
     - make install
     - cd $CIRRUS_WORKING_DIR/freebsd-src/sys/modules/netgraph/netgraph
+    - make
+    - make install
+    - cd $CIRRUS_WORKING_DIR/freebsd-src/sys/modules/if_bridge
     - make
     - make install
 
