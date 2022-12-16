@@ -1,5 +1,5 @@
 jails_task:
-  timeout_in: 5m
+  timeout_in: 15m
 
   matrix:
     - env:
@@ -35,6 +35,15 @@ jails_task:
         SCRIPT: jib
         SCRIPT_START: jib addm workstation em0
         SCRIPT_STOP: jib destroy workstation
+
+  # XXX patch netgraph
+  patch_netgraph_script:
+    - pkg install -y git-tiny
+    - git clone --branch=stable/13 https://github.com/freebsd/freebsd-src.git $CIRRUS_WORKING_DIR/freebsd-src
+    - cp jng/ng_bridge.c $CIRRUS_WORKING_DIR/freebsd-src/sys/netgraph
+    - cd $CIRRUS_WORKING_DIR/freebsd-src/sys/modules/netgraph/bridge
+    - make
+    - make install
 
   # XXX GCE does not allow vtnet0 to be bridged?
   create_fake_lan_if_script:
