@@ -3,6 +3,13 @@ jails_task:
 
   matrix:
     - env:
+        BSDINSTALL_DISTSITE: "https://download.freebsd.org/releases/amd64/amd64/12.4-RELEASE"
+        FREEBSD: 12.4-RELEASE
+
+      freebsd_instance:
+        image_family: freebsd-12-4
+
+    - env:
         BSDINSTALL_DISTSITE: "https://download.freebsd.org/releases/amd64/amd64/13.1-RELEASE"
         FREEBSD: 13.1-RELEASE
 
@@ -56,7 +63,7 @@ jails_task:
     - tar -zxvf /usr/freebsd-dist/base.txz -C /jail/workstation
 
   copy_jail_conf_file_script:
-    - cp $CIRRUS_WORKING_DIR/$SCRIPT/workstation.conf /etc/jail.conf.d
+    - cp $CIRRUS_WORKING_DIR/$SCRIPT/workstation.conf /etc/jail.workstation.conf
 
   copy_devfs_rules_file_script:
     - cp $CIRRUS_WORKING_DIR/devfs.rules /etc
