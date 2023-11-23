@@ -57,6 +57,11 @@ jails_task:
         SCRIPT_START: jib addm workstation em0
         SCRIPT_STOP: jib destroy workstation
 
+  # XXX Use only PURE_RDRAND
+  disable_random_entropy_sources_script:
+    - sysctl kern.random.harvest.mask=0
+    - sysctl -n kern.random.harvest.mask_symbolic
+
   # XXX GCE does not allow vtnet0 to be bridged?
   create_fake_lan_if_script:
     - ifconfig epair0 create
