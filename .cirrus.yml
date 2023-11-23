@@ -10,25 +10,39 @@ jails_task:
         image_family: freebsd-12-4
 
     - env:
-        BSDINSTALL_DISTSITE: "https://download.freebsd.org/releases/amd64/amd64/13.1-RELEASE"
-        FREEBSD: 13.1-RELEASE
+        BSDINSTALL_DISTSITE: "https://download.freebsd.org/releases/amd64/amd64/13.2-RELEASE"
+        FREEBSD: 13.2-RELEASE
 
       freebsd_instance:
-        image_family: freebsd-13-1
+        image_family: freebsd-13-2
 
     - env:
-        BSDINSTALL_DISTSITE: "https://download.freebsd.org/snapshots/amd64/13.1-STABLE"
-        FREEBSD: 13.1-STABLE
+        BSDINSTALL_DISTSITE: "https://download.freebsd.org/snapshots/amd64/13.2-STABLE"
+        FREEBSD: 13.2-STABLE
 
       freebsd_instance:
-        image_family: freebsd-13-1-snap
+        image_family: freebsd-13-2-snap
 
     - env:
-        BSDINSTALL_DISTSITE: "https://download.freebsd.org/snapshots/amd64/14.0-CURRENT"
-        FREEBSD: 14.0-CURRENT
+        BSDINSTALL_DISTSITE: "https://download.freebsd.org/releases/amd64/amd64/14.0-RELEASE"
+        FREEBSD: 14.0-RELEASE
+
+      freebsd_instance:
+        image_family: freebsd-14-0
+
+    - env:
+        BSDINSTALL_DISTSITE: "https://download.freebsd.org/snapshots/amd64/14.0-STABLE"
+        FREEBSD: 14.0-STABLE
 
       freebsd_instance:
         image_family: freebsd-14-0-snap
+
+    - env:
+        BSDINSTALL_DISTSITE: "https://download.freebsd.org/snapshots/amd64/15.0-CURRENT"
+        FREEBSD: 15.0-STABLE
+
+      freebsd_instance:
+        image_family: freebsd-15-0-snap
 
   matrix:
     - name: jng $FREEBSD
@@ -51,7 +65,7 @@ jails_task:
 
   setup_modules_script:
     - sysrc kld_list+=ng_ether
-    - kldload ng_ether
+    - kldload -n ng_ether
 
   copy_script_script:
     - cp /usr/share/examples/jails/$SCRIPT /usr/sbin
