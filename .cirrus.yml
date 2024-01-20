@@ -69,6 +69,7 @@ jails_task:
 
   copy_script_script:
     - cp /usr/share/examples/jails/$SCRIPT /usr/sbin
+    - fetch -o /usr/sbin/jng https://reviews.freebsd.org/file/data/wzf36evb7mwnpsmxee7e/PHID-FILE-yd2tsu2x7ztnjgurbk6m/share_examples_jails_jng
     - chmod 0755 /usr/sbin/$SCRIPT
 
   install_jail_script:
